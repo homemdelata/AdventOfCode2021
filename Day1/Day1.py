@@ -3,16 +3,17 @@ import sys
 from Utils import ReadFromFile
 
 def CheckDepthIncreases(measurements):
-    increases = -1
-    currentMeaseurement = -1
+    increases = 0
+    currentMeaseurement = measurements[0]
 
-    for measurement in measurements:
+    for measurement in measurements[1:]:
         if (measurement > currentMeaseurement):
             increases += 1
         
         currentMeaseurement = measurement
     
     return increases
+
 
 testArray = [199
 ,200
