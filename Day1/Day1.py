@@ -14,6 +14,18 @@ def CheckDepthIncreases(measurements):
     
     return increases
 
+def CheckSlidingWindowIncreases(measurements):
+    increases = 0
+    currentWindowMeasurement = measurements[0] + measurements[1] + measurements[2]
+
+    for i in range(len(measurements[1:-2])):
+        windowMeasurement = measurements[i+1] + measurements[i+2] + measurements[i+3]
+        if (windowMeasurement > currentWindowMeasurement):
+            increases += 1
+        
+        currentWindowMeasurement = windowMeasurement
+    
+    return increases
 
 testArray = [199
 ,200
@@ -26,12 +38,19 @@ testArray = [199
 ,260
 ,263]
 
-result = CheckDepthIncreases(testArray)
+test1Result = CheckDepthIncreases(testArray)
 
-print(result)
+print(test1Result)
 
 challengeArray = ReadFromFile.ToIntArray(os.path.join(sys.path[0], 'input1.txt'))
 
-challengeResult = CheckDepthIncreases(challengeArray)
+challenge1Result = CheckDepthIncreases(challengeArray)
 
-print(challengeResult)
+print(challenge1Result)
+
+test2Result = CheckSlidingWindowIncreases(testArray)
+print(test2Result)
+
+challenge2Result = CheckSlidingWindowIncreases(challengeArray)
+
+print(challenge2Result)
