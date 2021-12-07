@@ -42,6 +42,47 @@ def CheckEpsilonRate(diagnostics):
 def CheckPowerConsumption(diagnostics):
     return CheckGammaRate(diagnostics) * CheckEpsilonRate(diagnostics)
 
+def CheckOxygenGeneratorRating(diagnostics):
+    highestBitSize = max(diagnostics).bit_length()
+
+    resultDiagnostics = diagnostics
+
+    for n in range(highestBitSize,0,-1):
+        bitNumber = (2 ** (n-1))
+        arr = [diagnostic & bitNumber for diagnostic in resultDiagnostics]
+
+        if arr.count(bitNumber) >= arr.count(0):
+            resultDiagnostics = [consideredDiagnostic for consideredDiagnostic in resultDiagnostics if consideredDiagnostic & bitNumber == bitNumber]
+        else:
+            resultDiagnostics = [consideredDiagnostic for consideredDiagnostic in resultDiagnostics if consideredDiagnostic & bitNumber == 0]
+
+        if len(resultDiagnostics) == 1:
+            break
+
+    return resultDiagnostics[0]
+
+def CheckCO2ScrubberRating(diagnostics):
+    highestBitSize = max(diagnostics).bit_length()
+
+    resultDiagnostics = diagnostics
+
+    for n in range(highestBitSize,0,-1):
+        bitNumber = (2 ** (n-1))
+        arr = [diagnostic & bitNumber for diagnostic in resultDiagnostics]
+
+        if arr.count(bitNumber) < arr.count(0):
+            resultDiagnostics = [consideredDiagnostic for consideredDiagnostic in resultDiagnostics if consideredDiagnostic & bitNumber == bitNumber]
+        else:
+            resultDiagnostics = [consideredDiagnostic for consideredDiagnostic in resultDiagnostics if consideredDiagnostic & bitNumber == 0]
+
+        if len(resultDiagnostics) == 1:
+            break
+
+    return resultDiagnostics[0]
+
+def CheckLifeSupportRating(diagnostics):
+    return CheckOxygenGeneratorRating(diagnostics) * CheckCO2ScrubberRating(diagnostics)
+
 test1Array = [
 '00100',
 '11110',
@@ -69,3 +110,16 @@ challengeArray = ReadFromFile.ToStringArray(os.path.join(sys.path[0], 'input3.tx
 
 challenge1PowerConsumption = CheckPowerConsumption(ConvertBase2StringArrayToIntArray(challengeArray))
 print('Power Consumption Challenge 1: ' + str(challenge1PowerConsumption))
+
+
+test2OxygenGeneratorRating = CheckOxygenGeneratorRating(ConvertBase2StringArrayToIntArray(test1Array))
+print('Oxygen Generator Rating Test 2: ' + str(test2OxygenGeneratorRating))
+
+test2CO2ScrubberRating = CheckCO2ScrubberRating(ConvertBase2StringArrayToIntArray(test1Array))
+print('CO2 Scrubber Rating Test 2: ' + str(test2CO2ScrubberRating))
+
+test2LifeSupportRating = CheckLifeSupportRating(ConvertBase2StringArrayToIntArray(test1Array))
+print('Life Support Rating Test 2: ' + str(test2LifeSupportRating))
+
+challenge2LifeSupportRating = CheckLifeSupportRating(ConvertBase2StringArrayToIntArray(challengeArray))
+print('Life Support Rating Test 2: ' + str(challenge2LifeSupportRating))
