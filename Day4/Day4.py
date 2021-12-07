@@ -32,13 +32,23 @@ def PrepareBingoFromFile(path):
 def RunBingo(bingoSetup: BingoSetup):
     for n in range(5, len(bingoSetup.drawnNumbers)):
         for board in bingoSetup.boards:
-            result = CheckRows(bingoSetup.drawnNumbers[:n], board)
-            if len(result) == 5:
-                return (board, bingoSetup.drawnNumbers[:n])
-            result = CheckColumns(bingoSetup.drawnNumbers[:n], board)
-            if len(result) == 5:
+            rowResult = CheckRows(bingoSetup.drawnNumbers[:n], board)
+            colResult = CheckColumns(bingoSetup.drawnNumbers[:n], board)
+            if len(rowResult) == 5 or len(colResult) == 5:
                 return (board, bingoSetup.drawnNumbers[:n])
     return None
+
+def RunBingoForLast(bingoSetup: BingoSetup):
+    boards = bingoSetup.boards.copy()
+    lastWon = None
+    for n in range(5, len(bingoSetup.drawnNumbers)):
+        for board in boards:
+            rowResult = CheckRows(bingoSetup.drawnNumbers[:n], board)
+            colResult = CheckColumns(bingoSetup.drawnNumbers[:n], board)
+            if len(rowResult) == 5 or len(colResult) == 5:
+                lastWon = (board, bingoSetup.drawnNumbers[:n])
+                boards.remove(board)
+    return lastWon
 
 def CheckRows(drawnNumbers: array, board: BingoBoard):
     resultLine = []
@@ -83,3 +93,16 @@ challenge1BingoResult = RunBingo(challenge1BingoSetup)
 challenge1BingoScore = CalculateBingoScore(challenge1BingoResult[0], challenge1BingoResult[1])
 
 print(challenge1BingoScore)
+
+
+test2BingoSetup = PrepareBingoFromFile(os.path.join(sys.path[0], 'inputTest.txt'))
+test2BingoResult = RunBingoForLast(test2BingoSetup)
+test2BingoScore = CalculateBingoScore(test2BingoResult[0], test2BingoResult[1])
+
+print(test2BingoScore)
+
+challenge2BingoSetup = PrepareBingoFromFile(os.path.join(sys.path[0], 'input4.txt'))
+challenge2BingoResult = RunBingoForLast(challenge2BingoSetup)
+challenge2BingoScore = CalculateBingoScore(challenge2BingoResult[0], challenge2BingoResult[1])
+
+print(challenge2BingoScore)
